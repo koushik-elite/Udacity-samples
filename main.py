@@ -52,71 +52,67 @@ merged_inner['AUTHORIZATIONDATE'] = pd.to_datetime(merged_inner['AUTHORIZATIONDA
 merged_inner['LAST_RECEIPT_DATE'] = pd.to_datetime(merged_inner['LAST_RECEIPT_DATE']).dt.date
 merged_inner['LAST_RECEIPT_DATE'] = pd.to_datetime(merged_inner['LAST_RECEIPT_DATE']).dt.date
 
-merged_inner["MOB"].fillna(0,inplace = True)
-# merged_inner['MOB'] = pd.to_numeric(merged_inner['MOB'].str.strip(), downcast='integer')
-
-merged_inner["NPA_IN_CURRENT_MONTH"].fillna("NA",inplace = True)
-# merged_inner['NPA_IN_CURRENT_MONTH'] = merged_inner['NPA_IN_CURRENT_MONTH'].str.replace("Yes", "1").astype(int)
+# merged_inner['MOB'] = pd.to_numeric(merged_inner['MOB'].str.strip(), downcast='integer').fillna(0,inplace = True)
 
 merged_inner['NPA_IN_LAST_MONTH'] = merged_inner['NPA_IN_LAST_MONTH'].apply(lambda x: "NA" if x.strip() == '' else x)
 merged_inner['NPA_IN_CURRENT_MONTH'] = merged_inner['NPA_IN_CURRENT_MONTH'].apply(lambda x: "NA" if x.strip() == '' else x)
 
 merged_inner['NPA_IN_LAST_MONTH'] = merged_inner['NPA_IN_LAST_MONTH'].str.upper()
-merged_inner['NPA_IN_LAST_MONTH'] = merged_inner['NPA_IN_LAST_MONTH'].str.replace("YES", "1")
-merged_inner['NPA_IN_LAST_MONTH'] = merged_inner['NPA_IN_LAST_MONTH'].str.replace("NPA", "1")
+merged_inner['NPA_IN_LAST_MONTH'] = merged_inner['NPA_IN_LAST_MONTH'].str.replace("YES", "0")
+merged_inner['NPA_IN_LAST_MONTH'] = merged_inner['NPA_IN_LAST_MONTH'].str.replace("NPA", "0")
 merged_inner['NPA_IN_LAST_MONTH'] = merged_inner['NPA_IN_LAST_MONTH'].str.replace("#N/", "1")
-merged_inner['NPA_IN_LAST_MONTH'] = merged_inner['NPA_IN_LAST_MONTH'].str.replace("NA", "1")
+merged_inner['NPA_IN_LAST_MONTH'] = merged_inner['NPA_IN_LAST_MONTH'].str.replace("NA", "0")
 merged_inner['NPA_IN_LAST_MONTH'] = pd.to_numeric(merged_inner['NPA_IN_LAST_MONTH'].str.strip(), downcast='integer').fillna(0)
 
 merged_inner['NPA_IN_CURRENT_MONTH'] = merged_inner['NPA_IN_CURRENT_MONTH'].str.upper()
-merged_inner['NPA_IN_CURRENT_MONTH'] = merged_inner['NPA_IN_CURRENT_MONTH'].str.replace("YES", "1")
-merged_inner['NPA_IN_CURRENT_MONTH'] = merged_inner['NPA_IN_CURRENT_MONTH'].str.replace("NPA", "1")
+merged_inner['NPA_IN_CURRENT_MONTH'] = merged_inner['NPA_IN_CURRENT_MONTH'].str.replace("YES", "0")
+merged_inner['NPA_IN_CURRENT_MONTH'] = merged_inner['NPA_IN_CURRENT_MONTH'].str.replace("NPA", "0")
 merged_inner['NPA_IN_CURRENT_MONTH'] = merged_inner['NPA_IN_CURRENT_MONTH'].str.replace("#N/", "1")
-merged_inner['NPA_IN_CURRENT_MONTH'] = merged_inner['NPA_IN_CURRENT_MONTH'].str.replace("NA", "1")
+merged_inner['NPA_IN_CURRENT_MONTH'] = merged_inner['NPA_IN_CURRENT_MONTH'].str.replace("NA", "0")
 merged_inner['NPA_IN_CURRENT_MONTH'] = pd.to_numeric(merged_inner['NPA_IN_CURRENT_MONTH'].str.strip(), downcast='integer').fillna(0)
 
-merged_customer = merged_inner
-# merged_customer = pd.merge(left=merged_inner,right=customer, left_on='CUSTOMERID', right_on='CUSTOMERID')
+merged_customer = pd.merge(left=merged_inner,right=customer, left_on='CUSTOMERID', right_on='CUSTOMERID')
 
-# merged_customer['AGE'] = merged_customer['AGE'].apply(lambda x: "0" if x.strip() == '' else x)
-# merged_customer['AGE'] = merged_customer['AGE'].astype(int)
+merged_customer['CUSTOMERID'] = pd.to_numeric(merged_customer['CUSTOMERID'].str.strip(), downcast='integer').fillna(0)
+merged_customer['AGE'] = merged_customer['AGE'].apply(lambda x: "0" if x.strip() == '' else x)
+merged_customer['AGE'] = merged_customer['AGE'].astype(int)
 
-# merged_customer['NO_OF_DEPENDENT'] = merged_customer['NO_OF_DEPENDENT'].apply(lambda x: "0" if x.strip() == '' else x)
-# merged_customer['NO_OF_DEPENDENT'] = merged_customer['NO_OF_DEPENDENT'].astype(int)
+merged_customer['NO_OF_DEPENDENT'] = merged_customer['NO_OF_DEPENDENT'].apply(lambda x: "0" if x.strip() == '' else x)
+merged_customer['NO_OF_DEPENDENT'] = merged_customer['NO_OF_DEPENDENT'].astype(int)
 
-# merged_customer['PRE_JOBYEARS'] = merged_customer['PRE_JOBYEARS'].apply(lambda x: "0" if x.strip() == '' else x)
-# merged_customer['PRE_JOBYEARS'] = merged_customer['PRE_JOBYEARS'].astype(int)
+merged_customer['PRE_JOBYEARS'] = merged_customer['PRE_JOBYEARS'].apply(lambda x: "0" if x.strip() == '' else x)
+merged_customer['PRE_JOBYEARS'] = merged_customer['PRE_JOBYEARS'].astype(int)
 
-merged_lms = merged_customer
-# merged_lms = pd.merge(left=merged_customer,right=rfdata, left_on='AGREEMENTID', right_on='Masked_AgreementID')
+merged_customer['CITY'] = merged_customer['CITY'].apply(lambda x: "NA" if x.strip() == '' else x)
+merged_customer['CITY'] = merged_customer['CITY'].str.strip()
+
+merged_customer['QUALIFICATION'] = merged_customer['QUALIFICATION'].apply(lambda x: "NA" if x.strip() == '' else x)
+
+# merged_lms = merged_customer
+merged_lms = pd.merge(left=merged_customer,right=rfdata, left_on='AGREEMENTID', right_on='Masked_AgreementID')
 # merged_lms = merged_lms.drop(['Preprocessed_EmailBody'],axis=1)
 # merged_lms = merged_lms.drop(['Preprocessed_Subject'],axis=1)
 # merged_lms = merged_lms.drop(['Preprocessed_Subject'],axis=1)
-# merged_customer['NO_OF_DEPENDENT'] = pd.to_numeric(merged_inner['NO_OF_DEPENDENT'].str.strip(), downcast='integer').fillna(0)
-# merged_customer['PRE_JOBYEARS'] = pd.to_numeric(merged_inner['PRE_JOBYEARS'].str.strip(), downcast='integer').fillna(0)
-# merged_lms['CITY'] = merged_lms['CITY'].apply(lambda x: "NA" if x.strip() == '' else x)
-# merged_lms['CITY'] = merged_lms['CITY'].str.strip()
 
-# merged_lms['Date'] = pd.to_datetime(merged_lms['Date']).dt.date
-# merged_lms['QUALIFICATION'] = merged_lms['QUALIFICATION'].apply(lambda x: "NA" if x.strip() == '' else x)
+merged_lms['Date'] = pd.to_datetime(merged_lms['Date']).dt.date
 
-# merged_lms['SubType'] = merged_lms['SubType'].apply(lambda x: "NA" if x.strip() == '' else x)
-# merged_lms['SubType'] = merged_lms['SubType'].str.strip()
-# merged_lms['SubType'] = merged_lms['SubType'].str.replace(" ", "")
-# merged_lms['SubType'] = merged_lms['SubType'].str.upper()
-# merged_lms['Type'] = merged_lms['Type'].apply(lambda x: "NA" if x.strip() == '' else x)
-# merged_lms['Status'] = merged_lms['Status'].apply(lambda x: "NA" if x.strip() == '' else x)
+merged_lms['SubType'] = merged_lms['SubType'].apply(lambda x: "NA" if x.strip() == '' else x)
+merged_lms['SubType'] = merged_lms['SubType'].str.strip()
+merged_lms['SubType'] = merged_lms['SubType'].str.replace(" ", "")
+merged_lms['SubType'] = merged_lms['SubType'].str.upper()
+merged_lms['Type'] = merged_lms['Type'].apply(lambda x: "NA" if x.strip() == '' else x)
+merged_lms['Status'] = merged_lms['Status'].apply(lambda x: "NA" if x.strip() == '' else x)
 
 print(merged_lms.head())
 print(merged_lms.dtypes)
 
 merged_lms.to_csv('output.csv', sep=',', encoding='utf-8')
 
-# cols = ('QUALIFICATION','CITY','PRODUCT', 'Type', 'Status')
-# for c in cols:
-    # lbl = LabelEncoder() 
-    # lbl.fit(list(merged_lms[c].values)) 
-    # merged_lms[c] = lbl.transform(list(merged_lms[c].values))
+cols = ('QUALIFICATION','CITY','PRODUCT', 'SubType', 'Status', 'Type')
+for c in cols:
+    lbl = LabelEncoder() 
+    lbl.fit(list(merged_lms[c].values)) 
+    merged_lms[c] = lbl.transform(list(merged_lms[c].values))
 
 print(merged_lms.head())
 
@@ -124,7 +120,23 @@ cat = len(merged_lms.select_dtypes(include=['object']).columns)
 num = len(merged_lms.select_dtypes(include=['int64','float64']).columns)
 print('Total Features: ', cat, 'categorical', '+', num, 'numerical', '=', cat+num, 'features')
 
-k = 20
+merged_lms = merged_lms.drop(['EXCESS_AVAILABLE'],axis=1)
+merged_lms = merged_lms.drop(['EXCESS_ADJUSTED_AMT'],axis=1)
+# merged_lms = merged_lms.drop(['GROSS_INCOME'],axis=1)
+merged_lms = merged_lms.drop(['NETTAKEHOMEINCOME'],axis=1)
+# merged_lms = merged_lms.drop(['NET_DISBURSED_AMT'],axis=1)
+merged_lms = merged_lms.drop(['PRE_EMI_RECEIVED_AMT'],axis=1)
+merged_lms = merged_lms.drop(['PRE_EMI_DUEAMT'],axis=1)
+merged_lms = merged_lms.drop(['QUALIFICATION'],axis=1)
+merged_lms = merged_lms.drop(['AGREEMENTID'],axis=1)
+merged_lms = merged_lms.drop(['CUSTOMERID'],axis=1)
+merged_lms = merged_lms.drop(['Masked_AgreementID'],axis=1)
+merged_lms = merged_lms.drop(['Masked_CustomerID'],axis=1)
+merged_lms = merged_lms.drop(['TicketId'],axis=1)
+merged_lms = merged_lms.drop(['BRANCH_PINCODE'],axis=1)
+# merged_lms = merged_lms.drop(['AGE'],axis=1)
+
+k = 15
 corrmat = merged_lms.corr()
 colsCorr = corrmat.nlargest(k, 'FORECLOSURE')['FORECLOSURE'].index
 cm = np.corrcoef(merged_lms[colsCorr].values.T)
@@ -220,7 +232,7 @@ cat = len(train.select_dtypes(include=['object']).columns)
 num = len(train.select_dtypes(include=['int64','float64']).columns)
 print('Total Features: ', cat, 'categorical', '+', num, 'numerical', '=', cat+num, 'features')
 
-k = 6
+k = 14
 corrmat = df_encoded.corr()
 cols = corrmat.nlargest(k, 'Price')['Price'].index
 cm = np.corrcoef(df_encoded[cols].values.T)
